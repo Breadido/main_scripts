@@ -112,14 +112,13 @@ end)
 game:GetService("RunService").Heartbeat:connect(function()
 	if settings.AttackNearestEnemiez then
 		KillClosestBitches()
+		task.wait(0.155)
 	end
 end)
 game:GetService("RunService").Heartbeat:connect(function()
 	if settings.AttackSelectedEnemiez then
-		local GetTime = (GetClosestBitches2().Torso.CFrame.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).magnitude / 30
-		print(GetTime)
-		game:GetService("TweenService"):Create(game.Players.LocalPlayer.Character.PrimaryPart, TweenInfo.new(GetTime), {CFrame = GetClosestBitches2().Torso.CFrame * CFrame.new(0,0,3)}):Play()	
+		game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = GetClosestBitches2().Torso.CFrame * CFrame.new(0,0,3)
 		KillClosestBitches2()
-		task.wait(0.1)
+		task.wait(0.25)
 	end
 end)
