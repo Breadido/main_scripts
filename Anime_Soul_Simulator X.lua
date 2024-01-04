@@ -106,9 +106,9 @@ game:GetService("RunService").Heartbeat:connect(function()
 end)
 game:GetService("RunService").Heartbeat:connect(function()
 	if settings.AttackSelectedEnemiez then
-		local GetTime = (GetClosestBitches2().PrimaryPart.CFrame.p - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).magnitude / TeleportSpeed
+		local GetTime = (GetClosestBitches2().PrimaryPart.CFrame.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).magnitude / settings.TeleportSpeed
 		print(GetTime)
-		local Tween = game:GetService("TweenService"):Create(game.Players.LocalPlayer.Character.HumanoidRootPart, TweenInfo.new(Time, Enum.EasingStyle.Linear), {CFrame = CFrame.new(GetClosestt().PrimaryPart.CFrame.p)})
+		local Tween = game:GetService("TweenService"):Create(game.Players.LocalPlayer.Character.HumanoidRootPart, TweenInfo.new(Time, Enum.EasingStyle.Linear), {CFrame = CFrame.new(GetClosestt().PrimaryPart.CFrame.Position)})
 		Tween:Play()	
 		KillClosestBitches2()
 	end
