@@ -8,7 +8,6 @@ getgenv().settings = {
 	AttackNearestEnemiez = false,
 	SelectedEnemiez = nil,
 	AttackSelectedEnemiez = false,
-	TeleportSpeed = 50,
 }
 
 local enemiez = {}
@@ -18,7 +17,7 @@ for i, v in pairs(workspace._ENEMIES[game:GetService("Players").LocalPlayer:GetA
 	else
 		table.insert(enemiez, v.Name)
 	end
-end 
+end
 local GetClosestBitches = (newcclosure(function()
     local distance = 9e9
 	local bitches
@@ -34,10 +33,10 @@ local GetClosestBitches = (newcclosure(function()
     return bitches
 end))
 local GetClosestBitches2 = (newcclosure(function() -- for attack selected enemiez
-    local distance = 9e9
+    local distance = 1000
 	local bitches
     for i,v in pairs(workspace._ENEMIES[game:GetService("Players").LocalPlayer:GetAttribute("CurrentArea")]:GetChildren()) do
-        if v:IsA("Model") and v:FindFirstChild("HumanoidRootPart") and v.Name == settings.SelectedEnemiez then
+        if v:IsA("Model") and v:FindFirstChild("Torso") and v.Name == settings.SelectedEnemiez then
             local mag = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.HumanoidRootPart.Position).magnitude
             if mag < distance then
                 distance = mag
@@ -66,13 +65,24 @@ local dexed = loadstring(game:HttpGet('https://raw.githubusercontent.com/Breadid
 local ui = dexed.SetupUI("Anime Soul X Simulator | Made By Breadido | Discord: breadido")
 local page = ui.CreatePage("Main")
 
-page.CreateDropdown("Select Enemies", enemiez,function(a)
+local enemiezList = page.CreateDropdown("Select Enemies", enemiez,function(a)
 	settings.SelectedEnemiez = a
 end)
-page.CreateSlider("Teleport Speed", 50, 400, function(a)
-	settings.TeleportSpeed = tonumber(a)
+game:GetService("Players").LocalPlayer:GetAttributeChangedSignal("CurrentArea"):Connect(function()
+	table.clear(enemiez)
+	enemiezList.ClearDropdownList()
+	task.wait(0.1)
+	for i, v in pairs(workspace._ENEMIES[game:GetService("Players").LocalPlayer:GetAttribute("CurrentArea")]:GetChildren()) do
+		if table.find(enemiez, v.Name) then
+			-- do nothing yes absolutely do nothing
+		else
+			table.insert(enemiez, v.Name)
+		end
+	end
+	for i, v in pairs(enemiez) do
+		enemiezList.CreateOption(v)
+	end
 end)
-settings.TeleportSpeed = 50 -- default
 page.CreateToggle("Attack Selected Enemies", function(a)
 	settings.AttackSelectedEnemiez = a
 end)
@@ -89,7 +99,7 @@ page.CreateToggle("Always Clicking", function(a)
 	settings.AlwaysClicking = a
 end)
 
--- Loops
+-- Loops(i use heartbeat loop because i wanna try it because why not :>)
 game:GetService("RunService").Heartbeat:connect(function()
 	if settings.AlwaysClicking then
 		if settings.ClickingMode == "MouseButton1Click" then
@@ -106,10 +116,10 @@ game:GetService("RunService").Heartbeat:connect(function()
 end)
 game:GetService("RunService").Heartbeat:connect(function()
 	if settings.AttackSelectedEnemiez then
-		local GetTime = (GetClosestBitches2().PrimaryPart.CFrame.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).magnitude / settings.TeleportSpeed
+		local GetTime = (GetClosestBitches2().Torso.CFrame.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).magnitude / 30
 		print(GetTime)
-		local Tween = game:GetService("TweenService"):Create(game.Players.LocalPlayer.Character.HumanoidRootPart, TweenInfo.new(Time, Enum.EasingStyle.Linear), {CFrame = CFrame.new(GetClosestt().PrimaryPart.CFrame.Position)})
-		Tween:Play()	
+		game:GetService("TweenService"):Create(game.Players.LocalPlayer.Character.PrimaryPart, TweenInfo.new(GetTime), {CFrame = GetClosestBitches2().Torso.CFrame * CFrame.new(0,0,3)}):Play()	
 		KillClosestBitches2()
+		task.wait(0.1)
 	end
 end)
